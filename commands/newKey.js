@@ -15,8 +15,17 @@ module.exports = {
 		.addStringOption(duration =>
 			duration.setName('duration')
 			.setDescription('How long the key should last')
-			.setRequired(true)),
+			.setRequired(true))
+		.addStringOption(newname =>
+			newname.setName('newname')
+			.setDescription('The new name of this ticket or channel')
+			.setRequired(false)),
 	async execute(interaction) {
+		//change the channel name to 'newname' if requested
+		if(interaction.options.getString("newname")){
+			interaction.channel.setName(interaction.options.getString("newname"));
+		}
+
 		//get all current api keys in list
 		//call api to create a record of the api key, along with user and duration
 		//return the user, key, and duration in message

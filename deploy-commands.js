@@ -11,8 +11,19 @@ for (const file of commandFiles) {
 	commands.push(command.data.toJSON());
 }
 
+const globalCommands = [];
+const globalCommandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('z.js'));
+
+for (const file of globalCommandFiles) {
+	const globalCommand = require(`./commands/${file}`);
+	globalCommands.push(globalCommand.data.toJSON());
+}
+
 const rest = new REST({ version: '9' }).setToken(token);
 
 rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
-	.then(() => console.log('Successfully registered application commands.'))
+	.then(() => console.log('Successfully registered application commands for Grinder.'))
+	.catch(console.error);
+rest.put(Routes.applicationCommands(clientId), { body: globalCommands })
+	.then(() => console.log('Successfully registered Global application commands.'))
 	.catch(console.error);
