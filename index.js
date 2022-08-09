@@ -1,4 +1,4 @@
-const fs = require('node:fs');
+const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { guildId,token } = require('./config.json');
 var S = require('string');
@@ -36,12 +36,13 @@ client.on('interactionCreate', async interaction => {
 	if(!myPerms.includes('ADMINISTRATOR')){
 		await interaction.reply({content: 'You need the Administrator permissions to use this bot'});
 	}
-
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	else{
+		try {
+			await command.execute(interaction);
+		} catch (error) {
+			console.error(error);
+			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+		}
 	}
 });
 
