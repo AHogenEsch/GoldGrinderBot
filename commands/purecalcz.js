@@ -17,31 +17,31 @@ module.exports = {
 		// var gem;
 		// var jwl;
 		var purePrices = [cacPrice, pbsPrice, fedPrice, vilPrice, gemPrice, jwlPrice];
-		var pureCount = [0, 0, 0, 0, 0, 0];
+		var pureCount = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
 
 		const order = interaction.options.getString('order');
 
 		var orders = order.split(" ");
 		for(const ord of orders){
 			var type = ord.substring(ord.length-3);
-			var count = parseInt(ord.substring(0, ord.length-3));
+			var count = parseFloat(ord.substring(0, ord.length-3));
 			if(type == 'cac'){
-				pureCount[0] = count;
+				pureCount[0] += count;
 			}
 			else if(type == 'pbs'){
-				pureCount[1] = count;
+				pureCount[1] += count;
 			}
 			else if(type == 'fed'){
-				pureCount[2] = count;
+				pureCount[2] += count;
 			}
 			else if(type == 'vil'){
-				pureCount[3] = count;
+				pureCount[3] += count;
 			}
 			else if(type == 'gem'){
-				pureCount[4] = count;
+				pureCount[4] += count;
 			}
 			else if(type == 'jwl'){
-				pureCount[5] = count;
+				pureCount[5] += count;
 			}
 		}
 
@@ -56,8 +56,12 @@ module.exports = {
 				response += `\`${pureCount[i]}\` ${pureEmojis[i]} at a price of __**${purePrices[i]}**__ per = \`$${subTotal}\`\n`;
 			}
 		}
-		response += `Your total is \`$${sum}\``;
-
+		if(response == ''){
+			response += 'Please use the suffixes cac, pbs, fed, vil, gem, jwl\nExample: /purecalc 10pbs 1vil 4jwl';
+		}else{
+			response += `Your total is \`$${sum}\``;
+		}
+		
 		await interaction.reply(response);
 	},
 };

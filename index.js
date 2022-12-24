@@ -34,7 +34,7 @@ client.on('interactionCreate', async interaction => {
 	//returning array of permissions
 	const myPerms = bitfieldCalculator.permissions(memberPermsBitfieldNum);
 	if(!myPerms.includes('ADMINISTRATOR')){
-		await interaction.reply({content: 'You need the Administrator permissions to use this bot'});
+		await interaction.reply({content: 'You need the Administrator permission to use this bot'});
 	}
 	else{
 		try {

@@ -1,11 +1,11 @@
 {
 
-    "cacPrice": 17,
+    "cacPrice": 15.0,
     "pbsPrice": 2.25,
-    "fedPrice": 2.5,
-    "vilPrice": 9,
-    "gemPrice": 3,
-    "jwlPrice": 14
+    "fedPrice": 1.5,
+    "vilPrice": 7.0,
+    "gemPrice": 2.5,
+    "jwlPrice": 12.0
   
     
   }
