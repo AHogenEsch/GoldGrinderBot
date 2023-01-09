@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const {cacPrice, pbsPrice, fedPrice, vilPrice, gemPrice, jwlPrice} = require('../prices.json');
+const {cacPrice, pbsPrice, fedPrice, vilPrice, gemPrice, jwlPrice} = require('../../prices.json');
 
 module.exports = {
 	data: new SlashCommandBuilder()

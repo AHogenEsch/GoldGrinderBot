@@ -3,6 +3,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const axios = require('axios');
 // const { ApplicationCommandOptionTypes } = require('discord.js/typings/enums');
 const { auth } = require('../config.json');
+// RANDOM
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -21,48 +22,59 @@ module.exports = {
 			.setDescription('The new name of this ticket or channel')
 			.setRequired(false)),
 	async execute(interaction) {
-		//change the channel name to 'newname' if requested
-		if(interaction.options.getString("newname")){
-			interaction.channel.setName(interaction.options.getString("newname"));
-		}
+		if(interaction.member.permissions.has('ADMINISTRATOR')){
 
-		const duration = interaction.options.getString("duration");
-		var suffix = String(duration).substring(String(duration).length-1);
-		var time = parseInt(String(duration).substring(0, String(duration).length-1));
-		if(suffix == 'y'){
-			time *= 31536600000;
-		}
-		else if(suffix == 'm'){
-			time *= 2592000000;
-		}
-		else if(suffix == 'w'){
-			time *= 604800000;
-		}
-		else{
-			time *= 86400000;
-		}
-		time += Date.now();
+			//change the channel name to 'newname' if requested
+			if(interaction.options.getString("newname")){
+				interaction.channel.setName(interaction.options.getString("newname"));
+			}
 
-		//get all current api keys in list
-		//call api to create a record of the api key, along with user and duration
-		//return the user, key, and duration in message
+			const duration = interaction.options.getString("duration");
+			var suffix = String(duration).substring(String(duration).length-1);
+			var time = parseInt(String(duration).substring(0, String(duration).length-1));
+			if(suffix == 'y'){
+				time *= 31536600000;
+			}
+			else if(suffix == 'm'){
+				time *= 2592000000;
+			}
+			else if(suffix == 'w'){
+				time *= 604800000;
+			}
+			else if(suffix == 'd'){
+				time *= 86400000;
+			}
+			else{
+				//putting directly as ms
+				time *= 10;
+			}
+			time += Date.now();
 
-		// START PRE 3.0 API CODE {
-		// const target = interaction.options.getUser('target');
+			//call api to create a record of the api key, along with user and duration
+			//return the user, key, and duration in message
+			
+			const target = interaction.options.getUser('target');
+			// START PRE 3.0 API CODE {
 
-		// var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    	// var key = '';
-    	// for ( var i = 0; i < 20; i++ ) {
-        // 	key += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-    	// }
-    	// key = String(target.tag).substring(0, String(target.tag).length-5).toUpperCase() + key;
-		//// let result = await fetch("http://164.92.65.15:5000/add_autogrinder", {headers:{"OofAuth": airtable}, "api_key": "PlaceHolder123", "discord_id": target}).then(resp => resp.json())		//create randomly generated key that is not already in database
-		//let result = await axios.post('http://164.92.65.15:5000/add_autogrinder', {api_key: key, expire_after: time, discord_id: target.id}, {headers:{"OofAuth": oofauth}}) //.then(resp => resp.json())
-		//await interaction.reply(`Target User: <@${target.id}>\nDuration: ${duration}\nApiKey: ${key}`);
-		// END PRE 3.0 API CODE }
+			// var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+			// var key = '';
+			// for ( var i = 0; i < 20; i++ ) {
+			// 	key += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+			// }
+			// key = String(target.tag).substring(0, String(target.tag).length-5).toUpperCase() + key;
+			// // let result = await fetch("http://164.92.65.15:5000/add_autogrinder", {headers:{"OofAuth": airtable}, "api_key": "PlaceHolder123", "discord_id": target}).then(resp => resp.json())		//create randomly generated key that is not already in database
+			// let result = await axios.post('http://164.92.65.15:5000/add_autogrinder', {api_key: key, expire_after: time, discord_id: target.id}, {headers:{"OofAuth": auth}}) //.then(resp => resp.json())
+			// await interaction.reply(`Target User: <@${target.id}>\nDuration: ${duration}\nApiKey: ${key}`);
+			// END PRE 3.0 API CODE }
 
-		let result = await axios.post('http://164.92.65.15:5000/create_key', {timeout: time, discord_id: target.id, discord_name: target.tag}, {headers:{"token": auth}}) //.then(resp => resp.json())
-		await interaction.reply(`Target User: <@${target.id}>\nDuration: ${duration}\nApiKey: ${result}`);
+			let key = await axios.post('http://164.92.65.15:5000/api/v1/admin/create_key', {timeout: time, discord_id: target.id, discord_name: target.tag}, {headers:{"token": auth}})
+			.then(resp => resp.data?.key ) || 'Key Gen Error'
+			await interaction.reply(`Target User: <@${target.id}>\nDuration: ${duration}\nApiKey: ${key}`);
+		}
+        else{
+            await interaction.reply('L no perms');
+
+        }
 
 	},
 };

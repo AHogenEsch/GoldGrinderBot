@@ -12,10 +12,10 @@ for (const file of commandFiles) {
 }
 
 const globalCommands = [];
-const globalCommandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('z.js'));
+const globalCommandFiles = fs.readdirSync('./commands/globalCommands').filter(file => file.endsWith('.js'));
 
 for (const file of globalCommandFiles) {
-	const globalCommand = require(`./commands/${file}`);
+	const globalCommand = require(`./commands/globalCommands/${file}`);
 	globalCommands.push(globalCommand.data.toJSON());
 }
 

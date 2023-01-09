@@ -9,11 +9,17 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const globalCommandFiles = fs.readdirSync('./commands/globalCommands').filter(file => file.endsWith('.js'));
 
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.data.name, command);
+}
+
+for (const file of globalCommandFiles) {
+	const gCommand = require(`./commands/globalCommands/${file}`);
+	client.commands.set(gCommand.data.name, gCommand);
 }
 
 client.once('ready', async () => {console.log('Ready!')});
@@ -27,23 +33,23 @@ client.on('interactionCreate', async interaction => {
 	//making sure it is a command
 	if (!command) return;
 
-	//constructing array of permissions from the returned bitfield
-	const memberPermsBitfield = interaction.member.permissions['bitfield'];
-	//making sure it is the number variable and not BigInt
-	const memberPermsBitfieldNum = Number(memberPermsBitfield);
-	//returning array of permissions
-	const myPerms = bitfieldCalculator.permissions(memberPermsBitfieldNum);
-	if(!myPerms.includes('ADMINISTRATOR')){
-		await interaction.reply({content: 'You need the Administrator permission to use this bot'});
-	}
-	else{
+	// //constructing array of permissions from the returned bitfield
+	// const memberPermsBitfield = interaction.member.permissions['bitfield'];
+	// //making sure it is the number variable and not BigInt
+	// const memberPermsBitfieldNum = Number(memberPermsBitfield);
+	// //returning array of permissions
+	// const myPerms = bitfieldCalculator.permissions(memberPermsBitfieldNum);
+	// if(!myPerms.includes('ADMINISTRATOR')){
+	// 	await interaction.reply({content: 'You need the \'Administrator\' permission to use this bot'});
+	// }
+	// else{
 		try {
 			await command.execute(interaction);
 		} catch (error) {
 			console.error(error);
 			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 		}
-	}
+	// }
 });
 
 client.login(token);
